@@ -22,6 +22,8 @@ ggvolcano(
   add_label = TRUE,
   label = "row",
   label_number = 10,
+  label_number_left = NULL,
+  label_number_right = NULL,
   custom_label = NULL,
   output = TRUE,
   filename = "volcano_plot"
@@ -62,14 +64,15 @@ ggvolcano(
 
 \item{label_number}{how many gene labels you want to show in the plot.}
 
+\item{label_number_left}{how many gene labels you want to show in the left plot.}
+
+\item{label_number_right}{how many gene labels you want to show in the right plot.}
+
 \item{custom_label}{a vector containing your interest gene names that you want to add to the plot.}
 
 \item{output}{a logical value, whether to save the image, defult is TRUE.}
 
 \item{filename}{if the output = TRUE, please set a filename.}
-}
-\value{
-
 }
 \description{
 A volcano plot

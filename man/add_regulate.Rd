@@ -23,9 +23,6 @@ add_regulate(
 
 \item{fdr}{the threshold value of fdr.}
 }
-\value{
-
-}
 \description{
 Add regulate column to the DEG result
 }

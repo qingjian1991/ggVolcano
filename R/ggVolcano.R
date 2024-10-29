@@ -30,8 +30,8 @@ add_regulate <- function(data, log2FC_name = "log2FoldChange",
   loc_down <- intersect(which(data$log2FoldChange < (-log2FC)),
                         which(data$padj<fdr))
 
-  data$regulate[loc_up] <- "Up"
-  data$regulate[loc_down] <- "Down"
+  data$regulate[loc_up] <- sprintf("Up (%s)", length(loc_up))
+  data$regulate[loc_down] <- sprintf("Down (%s)", length(loc_down))
   return(data)
 }
 
@@ -54,7 +54,9 @@ add_regulate <- function(data, log2FC_name = "log2FoldChange",
 #' @param add_label a logical value, whether to add gene label, defult is TRUE.
 #' @param label the column name corresponding to the label.
 #' @param custom_label a vector containing your interest gene names that you want to add to the plot.
-#' @param label_number how many gene labels you want to show in the plot.
+#' @param label_number_left how many gene labels you want to show in the left plot.
+#' @param label_number_right how many gene labels you want to show in the right plot.
+#' @param label_number how many gene labels you want to show in the plot. If set label_number_left or label_number_right, this parameter is disabled.
 #' @param output a logical value, whether to save the image, defult is TRUE.
 #' @param filename if the output = TRUE, please set a filename.
 #'
@@ -79,7 +81,10 @@ ggvolcano <- function(data,
                       log2FC_cut = 1, FDR_cut = 0.05,
                       add_line = TRUE,
                       add_label = TRUE, label = "row",
-                      label_number = 10, custom_label = NULL,
+                      label_number = 10,
+                      label_number_left = NULL,
+                      label_number_right = NULL,
+                      custom_label = NULL,
                       output = TRUE, filename = "volcano_plot"){
 
   colnames(data)[colnames(data) == x] <- "x"
@@ -88,10 +93,33 @@ ggvolcano <- function(data,
 
   # 默认排序标签 or 自定义标签
   if (is.null(custom_label)) {
-    if (label_number != 0) {
+
+    if(!is.null(label_number_left) | !is.null(label_number_right)){
+      #top-n label in left or right
+      data$label <- rep("",nrow(data))
+
+      #left
+      markers = c()
+      if( !is.null(label_number_left)){
+        data1 = data[data$x<0,]
+        markers = c(markers, data1$geneName[order(data1$y)[1:label_number_left]])
+      }
+
+      #right
+      if( !is.null(label_number_right)){
+        data1 = data[data$x>0, ]
+        markers = c(markers, data1$geneName[order(data1$y)[1:label_number_right]])
+      }
+
+      data$label = ifelse(data$geneName %in% (markers) , data$geneName, "")
+
+    }else if(!is.null(label_number)){
+      #top-n label
       data$label <- rep("",nrow(data))
       data$label[order(data$y)[1:label_number]] <- data$geneName[order(data$y)[1:label_number]]
-    } else {
+    }
+
+    else {
       data$label <- rep("",nrow(data))
     }
   } else {

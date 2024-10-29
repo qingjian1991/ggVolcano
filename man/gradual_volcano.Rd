@@ -65,9 +65,6 @@ gradual_volcano(
 
 \item{filename}{if the output = TRUE, please set a filename.}
 }
-\value{
-
-}
 \description{
 A gradual volcano plot
 }
